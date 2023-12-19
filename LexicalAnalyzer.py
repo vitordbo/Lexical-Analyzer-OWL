@@ -1,4 +1,6 @@
 from ply import lex
+import pandas as pd
+import matplotlib.pyplot as plt
 
 PATH = 'dados.txt'
 
@@ -144,7 +146,6 @@ while True:
     tok = lexer.token()
     if not tok:
         break
-    print(tok)
     found_tokens.append((tok.lineno, tok.type, tok.value))
     if tok.type == 'ID' and tok.value.upper() == 'INDIVIDUALS':
         individual_count += 1
@@ -172,3 +173,27 @@ print(f"#                           Quantidade de Cardinalidades: {cardinalidade
 print(f"#                           Quantidade de Tipos de dados: {data_type_count}\t\t\t\t#")
 print(f"#                           Quantidade de Palavras reservadas: {reserved_count}\t\t\t#")
 print(f"#########################################################################################")
+
+# Dados do resumo
+data = {
+    "Quantidade de IDs": [id_count],
+    "Quantidade de Propriedades": [property_count],
+    "Quantidade de Indivíduos": [individual_count],
+    "Quantidade de Cardinalidades": [cardinalidade_count],
+    "Quantidade de Tipos de dados": [data_type_count],
+    "Quantidade de Palavras reservadas": [reserved_count]
+}
+
+# Criar um DataFrame
+df = pd.DataFrame(data)
+
+# Criar uma tabela
+fig, ax = plt.subplots(figsize=(8, 2))  # Ajuste o tamanho conforme necessário
+ax.axis('off')
+table = ax.table(cellText=df.values,
+                 colLabels=df.columns,
+                 cellLoc='center',
+                 loc='center')
+
+# Salvar como PNG com maior resolução (aumente dpi conforme necessário)
+plt.savefig('resumo_tabela.png', bbox_inches='tight', dpi=300)
