@@ -47,6 +47,7 @@ tokens = [
     'COMMA',
     'GT',
     'LT',
+    'EQ',
     'COLON',
     'CARDINALITY',
     'DATA_TYPE',
@@ -82,6 +83,7 @@ t_COMMA = r','
 t_GT = r'>'
 t_LT = r'<'
 t_COLON = r':'
+t_EQ = r'='
 
 def t_INDIVIDUAL(t):
     r'[A-Z][a-zA-Z0-9]*\d+'
