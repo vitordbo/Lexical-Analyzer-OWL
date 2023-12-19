@@ -45,6 +45,7 @@ tokens = [
     'COMMA',
     'GT',
     'LT',
+    'EQ',
     'COLON',
     'CARDINALITY',
     'DATA_TYPE',
@@ -80,6 +81,7 @@ t_COMMA = r','
 t_GT = r'>'
 t_LT = r'<'
 t_COLON = r':'
+t_EQ = r'='
 
 def t_INDIVIDUAL(t):
     r'[A-Z][a-zA-Z0-9]*\d+'
@@ -144,7 +146,7 @@ while True:
     tok = lexer.token()
     if not tok:
         break
-    print(tok)
+    # print(tok)
     found_tokens.append((tok.lineno, tok.type, tok.value))
     if tok.type == 'ID' and tok.value.upper() == 'INDIVIDUALS':
         individual_count += 1
