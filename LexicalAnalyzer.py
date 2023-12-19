@@ -27,7 +27,7 @@ reserved = {
     'or': 'OR',
     'only': 'ONLY',
     'class': 'CLASS',
-    'equivalent': 'EQUIVALENTTO',
+    'equivalento': 'EQUIVALENTTO',
     'individuals': 'INDIVIDUALS',
     'subclassof': 'SUBCLASSOF',
     'disjointclasses': 'DISJOINTCLASSES'
@@ -51,7 +51,8 @@ tokens = [
     'COLON',
     'CARDINALITY',
     'DATA_TYPE',
-    'PROPERTY'
+    'PROPERTY',
+    'RESERVED'
 ] + list(reserved.values())
 
 t_SOME = r'SOME'
@@ -85,19 +86,9 @@ t_LT = r'<'
 t_COLON = r':'
 t_EQ = r'='
 
-def t_INDIVIDUAL(t):
-    r'[A-Z][a-zA-Z0-9]*\d+'
-    t.type = 'INDIVIDUALS'
-    return t
-
-def t_PROPERTY_IS_OF(t):
-    r'\bis\w*Of\b'
-    t.type = 'PROPERTY'
-    return t
-
-def t_PROPERTY_HAS(t):
-    r'\bhas\w*\b'
-    t.type = 'PROPERTY'
+def t_RESERVED(t):
+    r'(Class:|Individuals:|EquivalentTo:|SubClassOf:|DisjointClasses:|some|all|and|value|min|max|exactly|only|that|not)'
+    t.type = 'RESERVED'
     return t
 
 def t_DATA_TYPE(t):
@@ -105,9 +96,24 @@ def t_DATA_TYPE(t):
     t.type = 'DATA_TYPE'
     return t
 
+def t_INDIVIDUAL(t):
+    r'[A-Z][a-zA-Z0-9]*\d+'
+    t.type = 'INDIVIDUALS'
+    return t
+
+def t_PROPERTY(t):
+    r'(\bis\w*Of\b)|(\bhas\w*\b)|([a-z]+\w*)'
+    t.type = 'PROPERTY'
+    return t
+
 def t_CARDINALITY(t):
     r'\d+'
     t.type = 'CARDINALITY'
+    return t
+
+def t_Class(t):
+    r'[A-Za-z_][A-Za-z0-9_]*'
+    t.type = 'CLASS'
     return t
 
 t_ignore = ' \t'
@@ -115,18 +121,6 @@ t_ignore = ' \t'
 def t_newline(t):
     r'\n+'
     t.lexer.lineno += len(t.value)
-
-def t_ID(t):
-    r'[a-z][a-z]*'
-    t.type = 'ID'
-    return t
-
-def t_Class(t):
-    r'[A-Za-z_][A-Za-z0-9_]*'
-    t.type = 'CLASS'
-    if t.value.upper() in ('EQUIVALENTTO', 'SUBCLASSOF', 'DISJOINTCLASSES', 'INDIVIDUALS'):
-        t.type = t.value.upper()
-    return t
 
 def t_error(t):
     print(f"Caractere ilegal: {t.value[0]}")
@@ -137,11 +131,11 @@ lexer = lex.lex()
 lexer.input(file)
 
 found_tokens = []
-id_count = 0
 property_count = 0
 individual_count = 0
 cardinalidade_count = 0
 data_type_count = 0
+classes_count = 0
 reserved_count = 0
 
 while True:
@@ -149,11 +143,7 @@ while True:
     if not tok:
         break
     found_tokens.append((tok.lineno, tok.type, tok.value))
-    if tok.type == 'ID' and tok.value.upper() == 'INDIVIDUALS':
-        individual_count += 1
-    elif tok.type == 'ID':
-        id_count += 1
-    elif tok.type == 'PROPERTY':
+    if tok.type == 'PROPERTY':
         property_count += 1
     elif tok.type == 'INDIVIDUALS':
         individual_count += 1
@@ -161,16 +151,18 @@ while True:
         cardinalidade_count += 1
     elif tok.type == 'DATA_TYPE':
         data_type_count += 1
-    elif tok.type in list(reserved.values()):
+    elif tok.type == 'RESERVED':
         reserved_count += 1
+    elif tok.type == 'CLASS':
+        classes_count += 1
 
 for lineno, token_type, token_value in found_tokens:
     print(f'Linha {lineno}: Token: {token_type}, Valor: {token_value}')
 
 print(f"######################################## Resumo #########################################")
-print(f"#                           Quantidade de IDs: {id_count}\t\t\t\t\t#")
 print(f"#                           Quantidade de Propriedades: {property_count}\t\t\t\t#")
 print(f"#                           Quantidade de Indivíduos: {individual_count}\t\t\t\t#")
+print(f"#                           Quantidade de Classes: {classes_count}\t\t\t\t\t#")
 print(f"#                           Quantidade de Cardinalidades: {cardinalidade_count}\t\t\t\t#")
 print(f"#                           Quantidade de Tipos de dados: {data_type_count}\t\t\t\t#")
 print(f"#                           Quantidade de Palavras reservadas: {reserved_count}\t\t\t#")
@@ -178,9 +170,9 @@ print(f"########################################################################
 
 # Dados do resumo
 data = {
-    "Quantidade de IDs": [id_count],
     "Quantidade de Propriedades": [property_count],
     "Quantidade de Indivíduos": [individual_count],
+    "Quantidade de Classes": [classes_count],
     "Quantidade de Cardinalidades": [cardinalidade_count],
     "Quantidade de Tipos de dados": [data_type_count],
     "Quantidade de Palavras reservadas": [reserved_count]
