@@ -2,6 +2,7 @@ from ply import lex
 import pandas as pd
 import matplotlib.pyplot as plt
 
+# Lendo o arquivo no diretório do projeto, contendo o exemplo a ser analisado.
 PATH = 'dados.txt'
 
 try:
@@ -14,6 +15,7 @@ except Exception as e:
 
 file = conteudo
 
+# Abaixo está as palavras reservadas da linguagem e logo em seguida todos os tokens
 reserved = {
     'some': 'SOME',
     'all': 'ALL',
@@ -86,6 +88,7 @@ t_LT = r'<'
 t_COLON = r':'
 t_EQ = r'='
 
+# Abaixo está as funções para reconhecer cada token ou palavra reservada da linguagem, contendo as expressões regulares para reconhecer as cadeias.
 def t_RESERVED(t):
     r'(Class:|Individuals:|EquivalentTo:|SubClassOf:|DisjointClasses:|some|all|and|value|min|max|exactly|only|that|not)'
     t.type = 'RESERVED'
@@ -126,10 +129,12 @@ def t_error(t):
     print(f"Caractere ilegal: {t.value[0]}")
     t.lexer.skip(1)
 
+# Inicialização do analisador léxico
 lexer = lex.lex()
 
 lexer.input(file)
 
+# Declaração de variáveis para contar as ocorrências dos tokens e palavradas reservadas
 found_tokens = []
 property_count = 0
 individual_count = 0
@@ -138,6 +143,7 @@ data_type_count = 0
 classes_count = 0
 reserved_count = 0
 
+# Função principal
 while True:
     tok = lexer.token()
     if not tok:
@@ -156,6 +162,7 @@ while True:
     elif tok.type == 'CLASS':
         classes_count += 1
 
+# Abaixo está o resumo da análise, assim como o valor de cada lexema por linha
 for lineno, token_type, token_value in found_tokens:
     print(f'Linha {lineno}: Token: {token_type}, Valor: {token_value}')
 
