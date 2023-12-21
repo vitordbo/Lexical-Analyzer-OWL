@@ -2,6 +2,9 @@ from ply import lex
 import pandas as pd
 import matplotlib.pyplot as plt
 
+# Analisador Léxico para OWL
+# Alunos: Vítor Duarte e Ricardo Júnior
+
 # Lendo o arquivo no diretório do projeto, contendo o exemplo a ser analisado.
 PATH = 'dados.txt'
 
@@ -15,7 +18,7 @@ except Exception as e:
 
 file = conteudo
 
-# Abaixo está as palavras reservadas da linguagem e logo em seguida todos os tokens
+# Abaixo estão as palavras reservadas da linguagem e logo em seguida todos os tokens
 reserved = {
     'some': 'SOME',
     'all': 'ALL',
@@ -88,7 +91,7 @@ t_LT = r'<'
 t_COLON = r':'
 t_EQ = r'='
 
-# Abaixo está as funções para reconhecer cada token ou palavra reservada da linguagem, contendo as expressões regulares para reconhecer as cadeias.
+# Abaixo estão as funções para reconhecer cada token ou palavra reservada da linguagem, contendo as expressões regulares para reconhecer as cadeias.
 def t_RESERVED(t):
     r'(Class:|Individuals:|EquivalentTo:|SubClassOf:|DisjointClasses:|some|all|and|value|min|max|exactly|only|that|not)'
     t.type = 'RESERVED'
@@ -134,7 +137,7 @@ lexer = lex.lex()
 
 lexer.input(file)
 
-# Declaração de variáveis para contar as ocorrências dos tokens e palavradas reservadas
+# Declaração de variáveis para contar as ocorrências dos tokens e demais coisas
 found_tokens = []
 property_count = 0
 individual_count = 0
@@ -162,7 +165,7 @@ while True:
     elif tok.type == 'CLASS':
         classes_count += 1
 
-# Abaixo está o resumo da análise, assim como o valor de cada lexema por linha
+# Em seguida está o resumo da análise, assim como o valor de cada lexema por linha
 for lineno, token_type, token_value in found_tokens:
     print(f'Linha {lineno}: Token: {token_type}, Valor: {token_value}')
 
@@ -185,16 +188,16 @@ data = {
     "Quantidade de Palavras reservadas": [reserved_count]
 }
 
-# Criar um DataFrame
+# Criar um DataFrame (Para imagem)
 df = pd.DataFrame(data)
 
 # Criar uma tabela
-fig, ax = plt.subplots(figsize=(8, 2))  # Ajuste o tamanho conforme necessário
+fig, ax = plt.subplots(figsize=(8, 2))  
 ax.axis('off')
 table = ax.table(cellText=df.values,
                  colLabels=df.columns,
                  cellLoc='center',
                  loc='center')
 
-# Salvar como PNG com maior resolução (aumente dpi conforme necessário)
+# Salvar como PNG 
 plt.savefig('resumo_tabela.png', bbox_inches='tight', dpi=300)
