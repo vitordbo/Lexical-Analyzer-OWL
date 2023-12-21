@@ -1,5 +1,6 @@
 # Lexical-Analyzer-OWL
 Lexical Analyzer for OWL language
+
 Alunos: Vítor Duarte e Ricardo Júnior
 
 Este é um analisador léxico para a linguagem OWL (Web Ontology Language) implementado em Python usando a biblioteca PLY. O código é projetado para analisar expressões OWL presentes em um arquivo de texto e fornecer um resumo estatístico.
