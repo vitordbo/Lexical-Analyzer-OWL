@@ -13,7 +13,7 @@ pip install pandas
 pip install matplotlib
 ```
 
-* Uso
+## Uso
 
 Clone o repositório para o seu sistema ou faça o download do ZIP
 ```bash
